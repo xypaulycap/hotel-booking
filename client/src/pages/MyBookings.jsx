@@ -1,10 +1,38 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Title from '../components/Title'
-import { assets, userBookingsDummyData } from '../assets/assets'
+import { assets } from '../assets/assets'
+import { useAppContext } from '../context/AppContext';
+import toast from 'react-hot-toast';
 
 const MyBookings = () => {
 
-    const [bookkings, setBookings] = useState(userBookingsDummyData);
+    
+    const {axios, getToken, user} = useAppContext()
+    const [bookings, setBookings] = useState([]);
+
+    //fetch user bookings
+    const fetchUserBookings = async () => {
+        try {
+            const {data} = await axios.get('/api/bookings/user', {headers : {
+                Authorization: `Bearer ${await getToken()}`
+            }})
+            if (data.success) {
+                setBookings(data.bookings)
+                console.log(data);
+                
+            }else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    useEffect(()=> {
+        if (user) {
+            fetchUserBookings()
+        }
+    }, [user])
   return (
     <div className='py-28 md:p4b-35 md:pt-32 px-4 md:px-16 lg:px-24 xl:px-32'>
 
@@ -17,7 +45,7 @@ const MyBookings = () => {
                 <div className='w-1/3'>Payment</div>
             </div>
 
-            {bookkings.map((booking)=> (
+            {bookings.map((booking)=> (
                 <div key={booking._id} className='grid grid-cols-1 md:grid-cols-[3fr_2fr_1fr] w-full border-b border-gray-300 py-6 first:border-t' >
                     {/* Hotel Details */}
                     <div className='flex flex-col md:flex-row'>
