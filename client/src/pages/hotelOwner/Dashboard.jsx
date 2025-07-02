@@ -16,12 +16,14 @@ const Dashboard = () => {
     // Fetch dashboard data
     const fetchDashboardData = async () => {
         try {
-            const { data } = await axios.get('/api/hotel-owner/dashboard', {
+            const { data } = await axios.get('/api/bookings/hotel', {
         headers: {
           Authorization: `Bearer ${await getToken()}`
         }});
             if (data.success) {
                 setDashboardData(data.dashboardData)
+                // console.log(data);
+                
             }else{
                 toast.error(data.message)
             }

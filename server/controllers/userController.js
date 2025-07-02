@@ -1,3 +1,5 @@
+import User from "../models/User.js";
+
 
 //Get /api/user
 
@@ -24,7 +26,7 @@ export const storeRecentSearchedCities = async (req, res) => {
             user.recentSearchedCities.push(recentSearchedCities); // Add the new city
         }
 
-        await user.save();
+        await User.save();
         res.json({ success: true, message: "City added to recent searches" });
     } catch (error) {
         res.json({ success: false, message: error.message });
